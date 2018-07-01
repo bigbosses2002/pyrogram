@@ -147,6 +147,7 @@ class Client(Methods, BaseClient):
                  system_version: str = None,
                  lang_code: str = None,
                  proxy: dict = None,
+                 use_ipv6 = False,
                  test_mode: bool = False,
                  phone_number: str = None,
                  phone_code: str or callable = None,
@@ -169,6 +170,7 @@ class Client(Methods, BaseClient):
         # TODO: Make code consistent, use underscore for private/protected fields
         self._proxy = proxy
         self.test_mode = test_mode
+        self.use_ipv6 = use_ipv6
         self.phone_number = phone_number
         self.phone_code = phone_code
         self.password = password
@@ -388,7 +390,7 @@ class Client(Methods, BaseClient):
             self.session.stop()
 
             self.dc_id = e.x
-            self.auth_key = Auth(self.dc_id, self.test_mode, self._proxy).create()
+            self.auth_key = Auth(self.dc_id, self.test_mode, self._proxy, self.use_ipv6).create()
 
             self.session = Session(
                 self,
@@ -433,7 +435,7 @@ class Client(Methods, BaseClient):
                 self.session.stop()
 
                 self.dc_id = e.x
-                self.auth_key = Auth(self.dc_id, self.test_mode, self._proxy).create()
+                self.auth_key = Auth(self.dc_id, self.test_mode, self._proxy, self.use_ipv6).create()
 
                 self.session = Session(
                     self,
@@ -929,7 +931,7 @@ class Client(Methods, BaseClient):
         except FileNotFoundError:
             self.dc_id = 1
             self.date = 0
-            self.auth_key = Auth(self.dc_id, self.test_mode, self._proxy).create()
+            self.auth_key = Auth(self.dc_id, self.test_mode, self._proxy, self.use_ipv6).create()
         else:
             self.dc_id = s["dc_id"]
             self.test_mode = s["test_mode"]
@@ -1166,7 +1168,7 @@ class Client(Methods, BaseClient):
                     session = Session(
                         self,
                         dc_id,
-                        Auth(dc_id, self.test_mode, self._proxy).create(),
+                        Auth(dc_id, self.test_mode, self._proxy, self.use_ipv6).create(),
                         is_media=True
                     )
 
@@ -1253,7 +1255,7 @@ class Client(Methods, BaseClient):
                         cdn_session = Session(
                             self,
                             r.dc_id,
-                            Auth(r.dc_id, self.test_mode, self._proxy).create(),
+                            Auth(r.dc_id, self.test_mode, self._proxy, self.use_ipv6).create(),
                             is_media=True,
                             is_cdn=True
                         )

@@ -112,7 +112,7 @@ class Session:
 
     def start(self):
         while True:
-            self.connection = Connection(DataCenter(self.dc_id, self.client.test_mode), self.client.proxy)
+            self.connection = Connection(DataCenter(self.dc_id, self.client.test_mode, self.client.use_ipv6), self.client.proxy)
 
             try:
                 self.connection.connect()
