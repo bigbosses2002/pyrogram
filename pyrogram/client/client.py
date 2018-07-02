@@ -221,7 +221,7 @@ class Client(Methods, BaseClient):
         if self.user_id is None:
             if self.token is None:
                 #self.authorize_user()
-                raise Unauthorized
+                raise Unauthorized("You need to authorize before this action")
             else:
                 self.authorize_bot()
 
@@ -412,7 +412,7 @@ class Client(Methods, BaseClient):
 
         while True:
             if self.phone_number is None:
-                raise PhoneNumberInvalid
+                raise PhoneNumberInvalid("Phone number invalid")
 
             self.phone_number = self.phone_number.strip("+")
 
@@ -479,7 +479,7 @@ class Client(Methods, BaseClient):
 
         while True:
             if self.phone_code is None:
-                raise PhoneCodeEmpty
+                raise PhoneCodeEmpty("Phone code is empty")
 
             self.phone_code = (
                 self.phone_code if type(self.phone_code) is str
@@ -508,7 +508,7 @@ class Client(Methods, BaseClient):
                         pass
 
                     if self.first_name is None:
-                        raise FirstnameInvalid
+                        raise FirstnameInvalid("Invalid first name")
 
                     self.first_name = self.first_name
                     self.last_name = self.last_name if self.last_name is not None else ""
