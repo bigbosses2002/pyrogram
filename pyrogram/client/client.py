@@ -39,7 +39,7 @@ from threading import Thread
 from pyrogram.api import functions, types
 from pyrogram.api.core import Object
 from pyrogram.api.errors import (
-    PhoneMigrate, NetworkMigrate, PhoneNumberInvalid,
+    PhoneMigrate, NetworkMigrate, PhoneNumberInvalid, Unauthorized,
     PhoneNumberUnoccupied, PhoneCodeInvalid, PhoneCodeHashEmpty,
     PhoneCodeExpired, PhoneCodeEmpty, SessionPasswordNeeded,
     PasswordHashInvalid, FloodWait, PeerIdInvalid, FirstnameInvalid, PhoneNumberBanned,
@@ -220,7 +220,8 @@ class Client(Methods, BaseClient):
 
         if self.user_id is None:
             if self.token is None:
-                self.authorize_user()
+                #self.authorize_user()
+                raise Unauthorized
             else:
                 self.authorize_bot()
 
@@ -411,15 +412,7 @@ class Client(Methods, BaseClient):
 
         while True:
             if self.phone_number is None:
-                self.phone_number = input("Enter phone number: ")
-
-                while True:
-                    confirm = input("Is \"{}\" correct? (y/n): ".format(self.phone_number))
-
-                    if confirm in ("y", "1"):
-                        break
-                    elif confirm in ("n", "2"):
-                        self.phone_number = input("Enter phone number: ")
+                raise PhoneNumberInvalid
 
             self.phone_number = self.phone_number.strip("+")
 
@@ -485,9 +478,11 @@ class Client(Methods, BaseClient):
             )
 
         while True:
+            if self.phone_code is None:
+                raise PhoneCodeEmpty
+
             self.phone_code = (
-                input("Enter phone code: ") if self.phone_code is None
-                else self.phone_code if type(self.phone_code) is str
+                self.phone_code if type(self.phone_code) is str
                 else str(self.phone_code(self.phone_number))
             )
 
@@ -512,8 +507,11 @@ class Client(Methods, BaseClient):
                     except PhoneNumberUnoccupied:
                         pass
 
-                    self.first_name = self.first_name if self.first_name is not None else input("First name: ")
-                    self.last_name = self.last_name if self.last_name is not None else input("Last name: ")
+                    if self.first_name is None:
+                        raise FirstnameInvalid
+
+                    self.first_name = self.first_name
+                    self.last_name = self.last_name if self.last_name is not None else ""
 
                     r = self.send(
                         functions.auth.SignUp(
@@ -545,7 +543,7 @@ class Client(Methods, BaseClient):
 
                         if self.password is None:
                             print("Hint: {}".format(r.hint))
-                            self.password = getpass.getpass("Enter password: ")
+                            #self.password = getpass.getpass("Enter password: ")
 
                         if type(self.password) is str:
                             self.password = r.current_salt + self.password.encode() + r.current_salt
