@@ -40,7 +40,7 @@ class TCP(socks.socksocket):
 
         if proxy and self.proxy_enabled:
             self.set_proxy(
-                proxy_type=socks.SOCKS5,
+                proxy_type=proxy.get("proxy_type", socks.SOCKS5),
                 addr=proxy.get("hostname", None),
                 port=proxy.get("port", None),
                 username=proxy.get("username", None),
