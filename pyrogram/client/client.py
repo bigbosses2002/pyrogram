@@ -273,8 +273,11 @@ class Client(Methods, BaseClient):
         """
         if not self.is_started:
             raise ConnectionError("Client is already stopped")
+        try:
+            Syncer.remove(self)
+        except KeyError:
+            pass
 
-        Syncer.remove(self)
         self.dispatcher.stop()
 
         for _ in range(self.DOWNLOAD_WORKERS):
@@ -839,7 +842,8 @@ class Client(Methods, BaseClient):
 
         log.debug("{} stopped".format(name))
 
-    def send(self, data: Object, retries: int = Session.MAX_RETRIES, timeout: float = Session.WAIT_TIMEOUT):
+    def send(self, data: Object, retries: int = Session.MAX_RETRIES,
+            timeout: float = Session.WAIT_TIMEOUT, save_entities: bool = True):
         """Use this method to send Raw Function queries.
 
         This method makes possible to manually call every single Telegram API method in a low-level manner.
@@ -864,8 +868,9 @@ class Client(Methods, BaseClient):
 
         r = self.session.send(data, retries, timeout)
 
-        self.fetch_peers(getattr(r, "users", []))
-        self.fetch_peers(getattr(r, "chats", []))
+        if save_entities:
+            self.fetch_peers(getattr(r, "users", []))
+            self.fetch_peers(getattr(r, "chats", []))
 
         return r
 
