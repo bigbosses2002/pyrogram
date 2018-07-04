@@ -48,8 +48,8 @@ class Result:
 class Session:
     INITIAL_SALT = 0x616e67656c696361
     NET_WORKERS = 1
-    WAIT_TIMEOUT = 15
-    MAX_RETRIES = 5
+    WAIT_TIMEOUT = 5
+    MAX_RETRIES = 2
     ACKS_THRESHOLD = 8
     PING_INTERVAL = 5
 

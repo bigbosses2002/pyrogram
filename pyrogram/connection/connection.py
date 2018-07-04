@@ -26,7 +26,7 @@ log = logging.getLogger(__name__)
 
 
 class Connection:
-    MAX_RETRIES = 3
+    MAX_RETRIES = 2
 
     MODES = {
         0: TCPFull,
@@ -50,6 +50,7 @@ class Connection:
             try:
                 log.info("Connecting...")
                 self.connection.connect(self.address)
+                return
             except OSError:
                 self.connection.close()
                 time.sleep(1)
@@ -57,6 +58,7 @@ class Connection:
                 break
         else:
             raise TimeoutError
+        raise ConnectionError("Cant establish connection through proxy")
 
     def close(self):
         self.connection.close()
