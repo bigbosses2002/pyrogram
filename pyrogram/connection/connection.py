@@ -57,8 +57,7 @@ class Connection:
             else:
                 break
         else:
-            raise TimeoutError
-        raise ConnectionError("Cant establish connection through proxy")
+            raise ConnectionError("Cant establish connection through proxy")
 
     def close(self):
         self.connection.close()
