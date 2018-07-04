@@ -32,7 +32,7 @@ log = logging.getLogger(__name__)
 
 
 class Auth:
-    MAX_RETRIES = 5
+    MAX_RETRIES = 1
 
     CURRENT_DH_PRIME = int(
         "C71CAEB9C6B1C9048E6C522F70F13F73980D40238E3E21C14934D037563D930F"
