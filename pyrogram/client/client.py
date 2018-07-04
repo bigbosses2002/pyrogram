@@ -272,7 +272,7 @@ class Client(Methods, BaseClient):
         Requires no parameters.
         """
         if not self.is_started:
-            raise ConnectionError("Client is already stopped")
+            return
         try:
             Syncer.remove(self)
         except KeyError:
